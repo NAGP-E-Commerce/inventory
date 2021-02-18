@@ -2,7 +2,6 @@ package com.nagp.stock.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,49 +17,49 @@ public class InventoryService {
 
 	@Autowired
 	InventoryRepository inventoryRepository;
-	
-	public String getStockForProduct(String productCode){
-		List<Stock> stocks = inventoryRepository.findByProductCode(productCode);
-		if (!CollectionUtils.isEmpty(stocks)) {	
-//			String json = new Gson().toJson(stocks.get(0));
-			String json = stocks.get(0).toString();
-			return json;
+
+	public ProductStockDTO getStockForProduct(String productId) {
+		List<Stock> stocks = inventoryRepository.findByProductId(productId);
+		if (!CollectionUtils.isEmpty(stocks)) {
+			return stockToProductStockDTO(stocks.get(0));
 		}
 		return null;
 	}
-	
-	public String getAllStocks(){
+
+	public List<ProductStockDTO> getAllStocks() {
 		Iterable<Stock> iter = inventoryRepository.findAll();
-		List<Stock> list = new ArrayList<Stock>();
+		List<ProductStockDTO> list = new ArrayList<>();
 		for (Stock stock : iter) {
-	        list.add(stock);
-	    }
-//		String json = new Gson().toJson(list);
-		String json = list.toString();
-		return json;
+			list.add(stockToProductStockDTO(stock));
+		}
+		return list;
 	}
-	
-	public boolean reserveProductStock(ProductStockDTO productStockDTO){
+
+	public boolean reserveProductStock(ProductStockDTO productStockDTO) {
 		boolean flag = true;
-		List<Stock> stocks = inventoryRepository.findByProductCode(productStockDTO.getProductCode());
+		List<Stock> stocks = inventoryRepository.findByProductId(productStockDTO.getProductId());
 		Stock stock = null;
-		if (!CollectionUtils.isEmpty(stocks)) {			
+		if (!CollectionUtils.isEmpty(stocks)) {
 			stock = stocks.get(0);
-		} if (null != stock) {
-			stock.reserveStock(productStockDTO.getQuantity());
-			inventoryRepository.save(stock);
+		}
+		if (null != stock) {
+			if (stock.reserveStock(productStockDTO.getQuantity()))
+				inventoryRepository.save(stock);
+			else
+				flag = false;
 		} else {
 			flag = false;
 		}
 		return flag;
 	}
-	
-	public boolean insertProductStock(String code, int availabile){
+
+	public boolean insertProductStock(String code, int availabile) {
+
 		boolean flag = false;
+
 		if (code != null) {
 			Stock stock = new Stock();
-//			stock.setId(UUID.randomUUID());
-			stock.setProductCode(code);
+			stock.setProductId(code);
 			stock.setAvailable(availabile);
 			stock.setReserved(0);
 			inventoryRepository.save(stock);
@@ -68,14 +67,14 @@ public class InventoryService {
 		}
 		return flag;
 	}
-	
-	public boolean reduceProductStock(ProductStockDTO productStockDTO){
+
+	public boolean reduceProductStock(ProductStockDTO productStockDTO) {
 		boolean flag = true;
-		List<Stock> stocks = inventoryRepository.findByProductCode(productStockDTO.getProductCode());
+		List<Stock> stocks = inventoryRepository.findByProductId(productStockDTO.getProductId());
 		Stock stock = null;
-		if (!CollectionUtils.isEmpty(stocks)) {			
+		if (!CollectionUtils.isEmpty(stocks)) {
 			stock = stocks.get(0);
-		} 
+		}
 		if (null != stock) {
 			stock.deduceStock(productStockDTO.getQuantity());
 			inventoryRepository.save(stock);
@@ -84,20 +83,25 @@ public class InventoryService {
 		}
 		return flag;
 	}
-	
-	public boolean addProductStock(ProductStockDTO productStockDTO){
-		boolean flag = true;
-		List<Stock> stocks = inventoryRepository.findByProductCode(productStockDTO.getProductCode());
+
+	public boolean addProductStock(ProductStockDTO productStockDTO) {
+		List<Stock> stocks = inventoryRepository.findByProductId(productStockDTO.getProductId());
 		Stock stock = null;
-		if (!CollectionUtils.isEmpty(stocks)) {			
+		if (!CollectionUtils.isEmpty(stocks)) {
 			stock = stocks.get(0);
-		}
-		if (null != stock) {
-			stock.addStock(productStockDTO.getQuantity());
+			stock.setAvailable(stock.getAvailable() + productStockDTO.getQuantity());
 			inventoryRepository.save(stock);
 		} else {
-			flag = false;
+			return insertProductStock(productStockDTO.getProductId(), productStockDTO.getQuantity());
 		}
-		return flag;
+		return true;
+	}
+
+	private ProductStockDTO stockToProductStockDTO(Stock stock) {
+		ProductStockDTO stockDTO = new ProductStockDTO();
+		stockDTO.setProductId(stock.getProductId());
+		stockDTO.setQuantity((int) stock.getAvailable());
+		stockDTO.setReserve((int) stock.getReserved());
+		return stockDTO;
 	}
 }

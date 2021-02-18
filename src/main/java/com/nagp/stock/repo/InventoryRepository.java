@@ -12,5 +12,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 @Repository
 public interface InventoryRepository extends JpaRepository<Stock, String>{
 
-	public List<Stock> findByProductCode(String productCode);
+	public List<Stock> findByProductId(String productId);
 }
