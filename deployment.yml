@@ -16,5 +16,5 @@ spec:
       - name: app2
         image: gcr.io/oceanic-craft-302516/inventory:latest
         ports:
-        - containerPort: 8001
+        - containerPort: 8091
         imagePullPolicy: Always
