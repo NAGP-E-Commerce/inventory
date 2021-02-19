@@ -68,7 +68,7 @@ public class InventoryService {
 		return flag;
 	}
 
-	public boolean reduceProductStock(ProductStockDTO productStockDTO) {
+	public boolean commitProductStock(ProductStockDTO productStockDTO) {
 		boolean flag = true;
 		List<Stock> stocks = inventoryRepository.findByProductId(productStockDTO.getProductId());
 		Stock stock = null;
@@ -76,8 +76,10 @@ public class InventoryService {
 			stock = stocks.get(0);
 		}
 		if (null != stock) {
-			stock.deduceStock(productStockDTO.getQuantity());
-			inventoryRepository.save(stock);
+			if (stock.commitStock(productStockDTO.getQuantity()))
+				inventoryRepository.save(stock);
+			else
+				flag = false;
 		} else {
 			flag = false;
 		}

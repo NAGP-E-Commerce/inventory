@@ -43,21 +43,21 @@ public class InventoryController {
 		return inventoryService.getAllStocks();
 	}
 
-	@RequestMapping(path = "/inventory/reserveStock", method = RequestMethod.POST)
+	@RequestMapping(path = "/inventory/reserve", method = RequestMethod.POST)
 	@ApiOperation("Reserve product stock")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Boolean.class) })
 	public boolean reserveProductStock(@RequestBody ProductStockDTO productStockDTO) {
 		return inventoryService.reserveProductStock(productStockDTO);
 	}
 
-	@RequestMapping(path = "/inventory/reduceStock", method = RequestMethod.POST)
+	@RequestMapping(path = "/inventory/commit", method = RequestMethod.POST)
 	@ApiOperation("Reduce product stock")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Boolean.class) })
 	public boolean reduceProductStock(@RequestBody ProductStockDTO productStockDTO) {
-		return inventoryService.reduceProductStock(productStockDTO);
+		return inventoryService.commitProductStock(productStockDTO);
 	}
 
-	@RequestMapping(path = "/inventory/addStock", method = RequestMethod.POST)
+	@RequestMapping(path = "/inventory/add", method = RequestMethod.POST)
 	@ApiOperation("Add product stock")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Boolean.class) })
 	public boolean addProductStock(@RequestBody ProductStockDTO productStockDTO) {

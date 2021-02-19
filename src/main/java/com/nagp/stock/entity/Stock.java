@@ -28,10 +28,11 @@ public class Stock {
 		return true;
 	}
 
-	public boolean deduceStock(int quantity) {
-		boolean isAvailable = isAvailable(quantity);
+	public boolean commitStock(int quantity) {
+		boolean isAvailable = available >= quantity && reserved >= quantity;
 		if (isAvailable) {
 			available -= quantity;
+			reserved -= quantity;
 		}
 		return isAvailable;
 	}
