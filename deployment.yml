@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: app2
+  name: inventory
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: app2
+      app: inventory
   template:
     metadata:
       labels:
-        app: app2
+        app: inventory
     spec:
       containers:
-      - name: app2
+      - name: inventory
         image: gcr.io/oceanic-craft-302516/inventory:latest
         ports:
         - containerPort: 8091
