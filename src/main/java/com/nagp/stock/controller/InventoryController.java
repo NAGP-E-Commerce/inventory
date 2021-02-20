@@ -21,42 +21,42 @@ import io.swagger.annotations.ApiResponses;
 
 @RestController
 @Api(value = "InventoryControllerAPI", produces = MediaType.APPLICATION_JSON_VALUE)
-@RequestMapping("api/ecommerce")
+@RequestMapping("/inventory")
 @Validated
 public class InventoryController {
 
 	@Autowired
 	private InventoryService inventoryService;
 
-	@RequestMapping(path = "/inventory/stock/{productId}", method = RequestMethod.GET)
+	@RequestMapping(path = "/stock/{productId}", method = RequestMethod.GET)
 	@ApiOperation("Get stock for product")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class) })
 	public ProductStockDTO getStockForProduct(@PathVariable(value = "productId") String productId) {
 		return inventoryService.getStockForProduct(productId);
 	}
 
-	@RequestMapping(path = "/inventory/all", method = RequestMethod.GET)
+	@RequestMapping(path = "/all", method = RequestMethod.GET)
 	@ApiOperation("Get all product stock")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class) })
 	public List<ProductStockDTO> getStockForProduct() {
 		return inventoryService.getAllStocks();
 	}
 
-	@RequestMapping(path = "/inventory/reserve", method = RequestMethod.POST)
+	@RequestMapping(path = "/reserve", method = RequestMethod.POST)
 	@ApiOperation("Reserve product stock")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Boolean.class) })
 	public boolean reserveProductStock(@RequestBody ProductStockDTO productStockDTO) {
 		return inventoryService.reserveProductStock(productStockDTO);
 	}
 
-	@RequestMapping(path = "/inventory/commit", method = RequestMethod.POST)
+	@RequestMapping(path = "/commit", method = RequestMethod.POST)
 	@ApiOperation("Reduce product stock")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Boolean.class) })
 	public boolean reduceProductStock(@RequestBody ProductStockDTO productStockDTO) {
 		return inventoryService.commitProductStock(productStockDTO);
 	}
 
-	@RequestMapping(path = "/inventory/add", method = RequestMethod.POST)
+	@RequestMapping(path = "/add", method = RequestMethod.POST)
 	@ApiOperation("Add product stock")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = Boolean.class) })
 	public boolean addProductStock(@RequestBody ProductStockDTO productStockDTO) {
