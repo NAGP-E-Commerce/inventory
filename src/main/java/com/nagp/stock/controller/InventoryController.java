@@ -28,6 +28,13 @@ public class InventoryController {
 	@Autowired
 	private InventoryService inventoryService;
 
+	@RequestMapping(path = "/test", method = RequestMethod.GET)
+	@ApiOperation("Test Stock")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class) })
+	public String test() {
+		return "test stock service";
+	}
+
 	@RequestMapping(path = "/stock/{productId}", method = RequestMethod.GET)
 	@ApiOperation("Get stock for product")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "OK", response = String.class) })
