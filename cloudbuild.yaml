@@ -16,8 +16,8 @@ steps:
    'set', 
    'image', 
    'deployment', 
-   'app', 
-   'app=gcr.io/oceanic-craft-302516/inventory'
+   'inventory', 
+   'inventory=gcr.io/oceanic-craft-302516/inventory'
   ]
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
